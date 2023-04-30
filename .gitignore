@@ -1,0 +1,13 @@
+# dependencies
+node_modules
+
+# logs
+npm-debug.log
+
+tmp
+built
+tsconfig.tsbuildinfo
+package-lock.json
+**/.DS_Store
+.idea
+src/config/*.json
