@@ -1,5 +1,3 @@
-import CheckAdmin from "@descriptors/checkAdmin";
-import CheckUserAuth from "@descriptors/checkUserAuth";
 import GroupModel from "@models/group.model";
 
 import {Controller, GET, POST} from "fastify-decorators";
@@ -9,8 +7,6 @@ import {FastifyRequest} from "fastify";
 @Controller({route: '/group'})
 export default class RequestController {
 
-  @CheckUserAuth
-  @CheckAdmin
   @POST({
     url: '/',
     options: {
@@ -36,7 +32,6 @@ export default class RequestController {
     });
   }
 
-  @CheckUserAuth
   @GET({
     url: "/"
   })
