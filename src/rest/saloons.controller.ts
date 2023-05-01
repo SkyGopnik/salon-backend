@@ -1,4 +1,4 @@
-import {Controller, GET, POST} from "fastify-decorators";
+import {Controller, DELETE, GET, POST, PUT} from "fastify-decorators";
 import CheckUserAuth from "@descriptors/checkUserAuth";
 import GetUserInfo from "@descriptors/getUserInfo";
 import {UserFastifyRequest} from "@rest/index";
@@ -14,6 +14,9 @@ export default class RequestController {
   })
   getSaloons(req: UserFastifyRequest) {
     return SaloonModel.findAll({
+      order: [
+        ['id', 'DESC']
+      ],
       where: {
         userId: req.user.id
       }
@@ -54,6 +57,69 @@ export default class RequestController {
       name,
       description,
       userId: req.user.id
+    });
+  }
+
+  @CheckUserAuth
+  @GetUserInfo
+  @PUT({
+    url: "/:id",
+    options: {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            name: {
+              type: 'string',
+              minLength: 3
+            },
+            description: {
+              type: 'string',
+              minLength: 3
+            }
+          },
+          required: [ 'name', 'description'],
+          additionalProperties: false
+        }
+      }
+    }
+  })
+  updateSaloon(req: UserFastifyRequest) {
+    const { id } = <{
+      id: string
+    }>req.params;
+
+    const { name, description } = <{
+      name: string,
+      description: string
+    }>req.body;
+
+    return SaloonModel.update({
+      name,
+      description,
+    }, {
+      where: {
+        id,
+        userId: req.user.id
+      }
+    });
+  }
+
+  @CheckUserAuth
+  @GetUserInfo
+  @DELETE({
+    url: "/:id"
+  })
+  deleteSaloon(req: UserFastifyRequest) {
+    const {id} = <{
+      id: string
+    }>req.params;
+
+    return SaloonModel.destroy({
+      where: {
+        id,
+        userId: req.user.id
+      }
     });
   }
 
