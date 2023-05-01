@@ -1,6 +1,15 @@
 import { resolve } from 'path';
-import { fastify, FastifyInstance } from 'fastify';
+import {fastify, FastifyInstance, FastifyRequest} from 'fastify';
 import { bootstrap } from 'fastify-decorators';
+import UserModel from "@models/user.model";
+
+
+export interface UserFastifyRequest extends FastifyRequest {
+  headers: {
+    authorization: string
+  }
+  user: UserModel
+}
 
 const app:FastifyInstance = fastify({
   ajv: {

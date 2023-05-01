@@ -1,8 +1,9 @@
 import {
     Table,
     Column,
-    Model
+    Model, HasMany
 } from 'sequelize-typescript';
+import SaloonModel from "@models/saloon.model";
 
 @Table({ tableName: 'users' })
 export default class UserModel extends Model {
@@ -21,5 +22,8 @@ export default class UserModel extends Model {
 
     @Column
     token: string;
+
+    @HasMany(() => SaloonModel, 'userId')
+    saloons: SaloonModel[];
 
 }
