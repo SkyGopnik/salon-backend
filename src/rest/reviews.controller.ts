@@ -181,44 +181,44 @@ export default class RequestController {
     });
   }
 
-  // @CheckUserAuth
-  // @GetUserInfo
-  // @DELETE({
-  //   url: "/:saloonId/:id"
-  // })
-  // async deleteService(req: UserFastifyRequest) {
-  //   const { saloonId, id } = <{
-  //     saloonId: string,
-  //     id: string
-  //   }>req.params;
-  //
-  //   const saloon = await SaloonModel.findOne({
-  //     where: {
-  //       id: saloonId
-  //     }
-  //   });
-  //
-  //   const service = await ServiceModel.findOne({
-  //     where: {
-  //       id
-  //     }
-  //   });
-  //
-  //   if (!service) {
-  //     throw Error("Service not exist");
-  //   }
-  //
-  //   const isSaloonOwnerService = await saloon?.$has("services", service);
-  //
-  //   if (!isSaloonOwnerService) {
-  //     throw Error("Service not found");
-  //   }
-  //
-  //   return ServiceModel.destroy({
-  //     where: {
-  //       id
-  //     }
-  //   });
-  // }
+  @CheckUserAuth
+  @GetUserInfo
+  @DELETE({
+    url: "/:saloonId/:id"
+  })
+  async deleteService(req: UserFastifyRequest) {
+    const { saloonId, id } = <{
+      saloonId: string,
+      id: string
+    }>req.params;
+
+    const saloon = await SaloonModel.findOne({
+      where: {
+        id: saloonId
+      }
+    });
+
+    const review = await ReviewModel.findOne({
+      where: {
+        id
+      }
+    });
+
+    if (!review) {
+      throw Error("Review not exist");
+    }
+
+    const isSaloonOwnerReview = await saloon?.$has("reviews", review);
+
+    if (!isSaloonOwnerReview) {
+      throw Error("Review not found");
+    }
+
+    return ReviewModel.destroy({
+      where: {
+        id
+      }
+    });
+  }
 
 }

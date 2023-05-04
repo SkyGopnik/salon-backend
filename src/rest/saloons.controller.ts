@@ -3,6 +3,9 @@ import CheckUserAuth from "@descriptors/checkUserAuth";
 import GetUserInfo from "@descriptors/getUserInfo";
 import {UserFastifyRequest} from "@rest/index";
 import SaloonModel from "@models/saloon.model";
+import ServiceModel from "@models/service.model";
+import RequestModel from "@models/request.model";
+import ReviewModel from "@models/review.model";
 
 @Controller({ route: '/saloons' })
 export default class RequestController {
@@ -19,6 +22,26 @@ export default class RequestController {
       ],
       where: {
         userId: req.user.id
+      }
+    });
+  }
+
+  @GET({
+    url: "/:id"
+  })
+  getSaloon(req: UserFastifyRequest) {
+    const { id } = <{
+      id: string
+    }>req.params;
+
+    return SaloonModel.findOne({
+      include: [
+        ServiceModel,
+        RequestModel,
+        ReviewModel
+      ],
+      where: {
+        id
       }
     });
   }

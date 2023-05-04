@@ -1,9 +1,10 @@
 import {
   Table,
   Column,
-  Model, DataType, BelongsTo
+  Model, DataType, BelongsTo, HasMany
 } from 'sequelize-typescript';
 import SaloonModel from "@models/saloon.model";
+import RequestModel from "@models/request.model";
 
 @Table({ tableName: 'services' })
 export default class ServiceModel extends Model {
@@ -19,6 +20,9 @@ export default class ServiceModel extends Model {
 
   @Column
   price: number;
+
+  @HasMany(() => RequestModel, 'serviceId')
+  requests: RequestModel[];
 
   @BelongsTo(() => SaloonModel, {foreignKey: 'saloonId', onDelete: 'cascade'})
   saloon: SaloonModel;
