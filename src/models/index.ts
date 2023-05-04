@@ -14,7 +14,12 @@ const db:Sequelize = new Sequelize({
 
   native: config.native,
   dialect: config.dialect,
-  dialectOptions: config.dialectOptions,
+  dialectOptions: {
+    dateStrings: true,
+    timezone: "Europe/Moscow",
+    useUTC: false,
+    ...config.dialectOptions
+  },
 
   pool: config.pool,
   define: config.define,
@@ -25,6 +30,8 @@ const db:Sequelize = new Sequelize({
   modelMatch: (filename, member) => {
     return filename.substring(0, filename.indexOf('.model')) === member.toLowerCase();
   },
+
+  timezone: "Europe/Moscow"
 });
 
 export default db;

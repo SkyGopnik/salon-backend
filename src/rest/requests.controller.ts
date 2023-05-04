@@ -5,6 +5,9 @@ import {UserFastifyRequest} from "@rest/index";
 import SaloonModel from "@models/saloon.model";
 import RequestModel from "@models/request.model";
 import ServiceModel from "@models/service.model";
+import moment from "moment";
+import { Op } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 @Controller({ route: '/requests' })
 export default class RequestController {
@@ -30,6 +33,36 @@ export default class RequestController {
     });
   }
 
+  @GET({
+    url: "/time/:saloonId/:serviceId"
+  })
+  getRequestsTime(req: UserFastifyRequest) {
+    const { saloonId, serviceId } = <{
+      saloonId: string,
+      serviceId: string
+    }>req.params;
+
+    const TODAY_START = moment().format('YYYY-MM-DD 00:00');
+    const NOW = moment().format('YYYY-MM-DD 23:59');
+
+    return RequestModel.findAll({
+      attributes: ['time'],
+      order: [
+        ['id', 'DESC']
+      ],
+      where: {
+        time: {
+          [Op.between]: [
+            TODAY_START,
+            NOW,
+          ]
+        },
+        serviceId,
+        saloonId
+      }
+    });
+  }
+
   @POST({
     url: "/:saloonId",
     options: {
@@ -49,11 +82,15 @@ export default class RequestController {
               type: 'string',
               minLength: 3
             },
+            time: {
+              type: 'string',
+              minLength: 3
+            },
             serviceId: {
               type: 'number'
             }
           },
-          required: ['firstName', 'lastName', 'phone', 'serviceId'],
+          required: ['firstName', 'lastName', 'phone', 'time', 'serviceId'],
           additionalProperties: false
         }
       }
@@ -68,18 +105,23 @@ export default class RequestController {
       firstName,
       lastName,
       phone,
+      time,
       serviceId
     } = <{
       firstName: string,
       lastName: string,
       phone: string,
+      time: string,
       serviceId: number
     }>req.body;
+
+    const [hours, minutes] = time.split(":");
 
     return RequestModel.create({
       firstName,
       lastName,
       phone,
+      time: moment().set("hours", +hours).set("minutes", +minutes).format("YYYY-MM-DD HH:mm:ss").toString(),
       serviceId,
       saloonId
     });

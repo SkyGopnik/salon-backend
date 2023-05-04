@@ -2,7 +2,7 @@ import {
   Table,
   Column,
   Model,
-  BelongsTo
+  BelongsTo, DataType
 } from 'sequelize-typescript';
 import SaloonModel from "@models/saloon.model";
 import ServiceModel from "@models/service.model";
@@ -18,6 +18,9 @@ export default class RequestModel extends Model {
 
   @Column
   phone: string;
+
+  @Column(DataType.DATE)
+  time: string;
 
   @BelongsTo(() => ServiceModel, {foreignKey: 'serviceId', onDelete: 'cascade'})
   service: ServiceModel;
