@@ -4,6 +4,7 @@ import GetUserInfo from "@descriptors/getUserInfo";
 import {UserFastifyRequest} from "@rest/index";
 import SaloonModel from "@models/saloon.model";
 import RequestModel from "@models/request.model";
+import ServiceModel from "@models/service.model";
 
 @Controller({ route: '/requests' })
 export default class RequestController {
@@ -19,6 +20,7 @@ export default class RequestController {
     }>req.params;
 
     return RequestModel.findAll({
+      include: [ServiceModel],
       order: [
         ['id', 'DESC']
       ],
