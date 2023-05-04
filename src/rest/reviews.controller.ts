@@ -3,7 +3,6 @@ import CheckUserAuth from "@descriptors/checkUserAuth";
 import GetUserInfo from "@descriptors/getUserInfo";
 import {UserFastifyRequest} from "@rest/index";
 import SaloonModel from "@models/saloon.model";
-import ServiceModel from "@models/service.model";
 import ReviewModel from "@models/review.model";
 
 @Controller({ route: '/reviews' })
@@ -107,45 +106,45 @@ export default class RequestController {
         body: {
           type: "object",
           properties: {
-            name: {
+            firstName: {
               type: 'string',
               minLength: 3
             },
-            subName: {
+            lastName: {
               type: 'string',
               minLength: 3
+            },
+            rating: {
+              type: 'number',
+              min: 0
             },
             description: {
               type: 'string',
               minLength: 3
-            },
-            price: {
-              type: 'number',
-              min: 0
             }
           },
-          required: ['name', 'description', 'price'],
+          required: ['firstName', 'lastName', 'description', 'rating'],
           additionalProperties: false
         }
       }
     }
   })
-  async updateService(req: UserFastifyRequest) {
+  async updateReview(req: UserFastifyRequest) {
     const { saloonId, id } = <{
       saloonId: string,
       id: string
     }>req.params;
 
     const {
-      name,
-      subName,
-      description,
-      price
+      firstName,
+      lastName,
+      rating,
+      description
     } = <{
-      name: string,
-      subName: string,
-      description: string,
-      price: number
+      firstName: string,
+      lastName: string,
+      rating: number,
+      description: string
     }>req.body;
 
     const saloon = await SaloonModel.findOne({
@@ -154,27 +153,27 @@ export default class RequestController {
       }
     });
 
-    const service = await ServiceModel.findOne({
+    const review = await ReviewModel.findOne({
       where: {
         id
       }
     });
 
-    if (!service) {
-      throw Error("Service not exist");
+    if (!review) {
+      throw Error("Review not exist");
     }
 
-    const isSaloonOwnerService = await saloon?.$has("services", service);
+    const isSaloonOwnerReview = await saloon?.$has("reviews", review);
 
-    if (!isSaloonOwnerService) {
-      throw Error("Service not found");
+    if (!isSaloonOwnerReview) {
+      throw Error("Review not found");
     }
 
-    return ServiceModel.update({
-      name,
-      subName,
-      description,
-      price
+    return ReviewModel.update({
+      firstName,
+      lastName,
+      rating,
+      description
     }, {
       where: {
         id
@@ -182,44 +181,44 @@ export default class RequestController {
     });
   }
 
-  @CheckUserAuth
-  @GetUserInfo
-  @DELETE({
-    url: "/:saloonId/:id"
-  })
-  async deleteService(req: UserFastifyRequest) {
-    const { saloonId, id } = <{
-      saloonId: string,
-      id: string
-    }>req.params;
-
-    const saloon = await SaloonModel.findOne({
-      where: {
-        id: saloonId
-      }
-    });
-
-    const service = await ServiceModel.findOne({
-      where: {
-        id
-      }
-    });
-
-    if (!service) {
-      throw Error("Service not exist");
-    }
-
-    const isSaloonOwnerService = await saloon?.$has("services", service);
-
-    if (!isSaloonOwnerService) {
-      throw Error("Service not found");
-    }
-
-    return ServiceModel.destroy({
-      where: {
-        id
-      }
-    });
-  }
+  // @CheckUserAuth
+  // @GetUserInfo
+  // @DELETE({
+  //   url: "/:saloonId/:id"
+  // })
+  // async deleteService(req: UserFastifyRequest) {
+  //   const { saloonId, id } = <{
+  //     saloonId: string,
+  //     id: string
+  //   }>req.params;
+  //
+  //   const saloon = await SaloonModel.findOne({
+  //     where: {
+  //       id: saloonId
+  //     }
+  //   });
+  //
+  //   const service = await ServiceModel.findOne({
+  //     where: {
+  //       id
+  //     }
+  //   });
+  //
+  //   if (!service) {
+  //     throw Error("Service not exist");
+  //   }
+  //
+  //   const isSaloonOwnerService = await saloon?.$has("services", service);
+  //
+  //   if (!isSaloonOwnerService) {
+  //     throw Error("Service not found");
+  //   }
+  //
+  //   return ServiceModel.destroy({
+  //     where: {
+  //       id
+  //     }
+  //   });
+  // }
 
 }
