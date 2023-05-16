@@ -52,9 +52,13 @@ export default class RequestController {
             price: {
               type: 'number',
               min: 0
+            },
+            duration: {
+              type: 'number',
+              min: 0
             }
           },
-          required: ['name', 'description', 'price'],
+          required: ['name', 'description', 'price', 'duration'],
           additionalProperties: false
         }
       }
@@ -69,12 +73,14 @@ export default class RequestController {
       name,
       subName,
       description,
-      price
+      price,
+      duration
     } = <{
       name: string,
       subName: string,
       description: string,
-      price: number
+      price: number,
+      duration: number
     }>req.body;
 
     const saloon = await SaloonModel.findOne({
@@ -93,6 +99,7 @@ export default class RequestController {
       subName,
       description,
       price,
+      duration,
       saloonId
     });
   }
@@ -121,9 +128,13 @@ export default class RequestController {
             price: {
               type: 'number',
               min: 0
+            },
+            duration: {
+              type: 'number',
+              min: 0
             }
           },
-          required: ['name', 'description', 'price'],
+          required: ['name', 'description', 'price', 'duration'],
           additionalProperties: false
         }
       }
@@ -139,12 +150,14 @@ export default class RequestController {
       name,
       subName,
       description,
-      price
+      price,
+      duration
     } = <{
       name: string,
       subName: string,
       description: string,
-      price: number
+      price: number,
+      duration: number
     }>req.body;
 
     const saloon = await SaloonModel.findOne({
@@ -173,7 +186,8 @@ export default class RequestController {
       name,
       subName,
       description,
-      price
+      price,
+      duration
     }, {
       where: {
         id

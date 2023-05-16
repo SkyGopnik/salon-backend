@@ -7,7 +7,6 @@ import RequestModel from "@models/request.model";
 import ServiceModel from "@models/service.model";
 import moment from "moment";
 import { Op } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
 
 @Controller({ route: '/requests' })
 export default class RequestController {
@@ -34,30 +33,20 @@ export default class RequestController {
   }
 
   @GET({
-    url: "/time/:saloonId/:serviceId"
+    url: "/time/:saloonId"
   })
   getRequestsTime(req: UserFastifyRequest) {
-    const { saloonId, serviceId } = <{
-      saloonId: string,
-      serviceId: string
+    const { saloonId } = <{
+      saloonId: string
     }>req.params;
 
-    const TODAY_START = moment().format('YYYY-MM-DD 00:00');
-    const NOW = moment().format('YYYY-MM-DD 23:59');
-
     return RequestModel.findAll({
+      include: [ ServiceModel ],
       attributes: ['time'],
       order: [
         ['id', 'DESC']
       ],
       where: {
-        time: {
-          [Op.between]: [
-            TODAY_START,
-            NOW,
-          ]
-        },
-        serviceId,
         saloonId
       }
     });
@@ -115,13 +104,11 @@ export default class RequestController {
       serviceId: number
     }>req.body;
 
-    const [hours, minutes] = time.split(":");
-
     return RequestModel.create({
       firstName,
       lastName,
       phone,
-      time: moment().set("hours", +hours).set("minutes", +minutes).format("YYYY-MM-DD HH:mm:ss").toString(),
+      time: moment(time, "HH:mm DD.MM").format("YYYY-MM-DD HH:mm:ss").toString(),
       serviceId,
       saloonId
     });

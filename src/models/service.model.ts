@@ -21,6 +21,9 @@ export default class ServiceModel extends Model {
   @Column
   price: number;
 
+  @Column
+  duration: number;
+
   @HasMany(() => RequestModel, 'serviceId')
   requests: RequestModel[];
 
