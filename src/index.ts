@@ -6,7 +6,7 @@ import db from '@models';
 import rest from '@rest';
 
 // constants
-const port:number = 6713;
+const port:number = 6449;
 
 (async () => {
 
