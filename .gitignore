@@ -11,3 +11,5 @@ package-lock.json
 **/.DS_Store
 .idea
 src/config/*.json
+
+pm2.json
